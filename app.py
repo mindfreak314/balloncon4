@@ -116,7 +116,7 @@ if show_current_round:
             width: 100%;
             overflow: hidden;
             position: relative;
-            height: 500px; /* Adjust height */
+            height: 800px; /* Adjust height */
             border: 1px solid #ddd;
         }}
         
