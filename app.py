@@ -94,8 +94,17 @@ except:
 if show_current_round:
     st.title(f"Pairings for round {current_round}")
 
+    
+
     # Sort players by name
     df = round_df.sort_values(by="Player").rename({"Player": "Player (sorted alphabetically)"}, axis=1).drop("Result", axis=1).reset_index(drop=True)
+
+    with st.expander("Show whole list"):
+        # st.markdown(round_df.sort_values("Player").drop("Result", axis=1).style.hide(axis="index").to_html(), unsafe_allow_html=True)
+        st.markdown(df.style.hide(axis="index").to_html(), unsafe_allow_html=True)
+
+    
+
 
     # Configuration
     scroll_speed = 40  # Adjust scrolling speed (lower = faster)
