@@ -140,3 +140,13 @@ if current_round > 0:
         round_df = round_df.style.hide(axis="index")
 
     st.markdown(round_df.to_html(), unsafe_allow_html=True)
+
+    st.write("")
+    with st.expander("Pairings for beamer"):
+        columns = st.columns(4)
+
+        col_counter = 0
+        for i in round_df.Pod.unique():
+            columns[col_counter%4].markdown(round_df[round_df.Pod == i].style.hide(axis="index").to_html(), unsafe_allow_html=True)
+            columns[col_counter%4].write("")
+            col_counter += 1
