@@ -37,7 +37,7 @@ def get_finished_round():
 
 
 def get_control_sheet():
-    control_sheet_general = pd.read_excel("control_sheet.ods", engine="odf", sheet_name="general").set_index("Player")    
+    control_sheet_general = pd.read_excel("control_sheet.ods", engine="odf", sheet_name="general").set_index("Player")
     return control_sheet_general
 
 def get_oppo_dict(control_sheet_general):
@@ -65,6 +65,8 @@ def get_match_logs(control_sheet):
         for i in range(1,finished_rounds+1):
             round_df = pd.read_excel("control_sheet.ods", engine="odf", sheet_name=f"round {i}")
             if "Result" not in round_df.columns: continue
+            # print(round_df.Result.isna())
+            round_df.loc[round_df.Result.isna(), "Result"] = "draw"
             for pod_number in range(1, round_df[round_df.Pod != "BYE"].Pod.max()+1):
                 match_log_element = {}
                 pod_df = round_df[round_df.Pod == pod_number]
@@ -120,6 +122,7 @@ def add_wld(control_sheet, match_logs):
             else:
                 control_sheet.loc[player, "loss"] += 1
 
+ 
     return control_sheet
 
 
@@ -411,11 +414,22 @@ def get_heuristic_pairing(control_sheet, pod_config, oppo_dict, lock_players):
     lock_players to certain tables
     """
     control_sheet_general_copy = control_sheet[control_sheet.dropped == 0]
+    # control_sheet_general_copy["no_loser"] = 0
+    # control_sheet_general_copy.loc[(control_sheet_general_copy.win > 0) | (control_sheet_general_copy.draw > 0), "no_loser"] = 1
     control_sheet_general_copy["rndm"] = np.random.random(len(control_sheet_general_copy))
-    control_sheet_general_copy = control_sheet_general_copy.sort_values(["bye", "rndm"], ascending=False) # "Points", 
+    control_sheet_general_copy = control_sheet_general_copy.sort_values(["bye", "Points", "rndm"], ascending=False) # 
     player_order = control_sheet_general_copy.index.values
     players_4 = player_order[:pod_config[0]*4]
-    players_byes = player_order[-pod_config[1]:]
+    if pod_config[1] == 0:
+        players_byes = []
+    else:
+        players_byes = player_order[-pod_config[1]:]
+
+    # reshuffle players_4
+    # print(players_4[:4], len(players_4))
+    shuffle(players_4)
+    # print(players_4[:4], len(players_4))
+
     # place players_4
     matches_4 = [[] for _ in range(pod_config[0])]
 

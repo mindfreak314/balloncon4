@@ -64,50 +64,69 @@ f = {
 }
 
 show_current_round = True
+top16_df = pd.read_excel("control_sheet.ods", engine="odf", sheet_name="top 16")
+# if 'Result' in top16_df.columns:
+#     top16_df = top16_df.style.applymap(color_result, subset=['Result']).format(f).hide(axis="index")
+# else:
+#     top16_df = top16_df.style.hide(axis="index")
+
+# st.markdown(top16_df.to_html(), unsafe_allow_html=True)
 try:
-    top4_df = pd.read_excel("control_sheet.ods", engine="odf", sheet_name="top 4")
-    if 'Result' in top4_df.columns:
-        top4_df = top4_df.style.applymap(color_result, subset=['Result']).format(f).hide(axis="index")
-    else:
-        top4_df = top4_df.style.hide(axis="index")
-    with st.expander("Top 4"):
-        st.markdown(top4_df.to_html(), unsafe_allow_html=True)
-    show_current_round=False
+    with st.expander("Top 16"):
+
+        columns = st.columns(4)
+
+        col_counter = 0
+        for i in top16_df.Pod.unique():
+            columns[col_counter%4].markdown(top16_df[top16_df.Pod == i].style.hide(axis="index").to_html(), unsafe_allow_html=True)
+            columns[col_counter%4].write("")
+            col_counter += 1
+        show_current_round=False
 except:
     pass
 
-try:
-    top16_df = pd.read_excel("control_sheet.ods", engine="odf", sheet_name="top 16")
-    if 'Result' in top16_df.columns:
-        top16_df = top16_df.style.applymap(color_result, subset=['Result']).format(f).hide(axis="index")
-    else:
-        top16_df = top16_df.style.hide(axis="index")
-    with st.expander("Top 16"):
-        st.markdown(top16_df.to_html(), unsafe_allow_html=True)
-    show_current_round=False
-except:
-    pass
+# try:
+#     top4_df = pd.read_excel("control_sheet.ods", engine="odf", sheet_name="top 4")
+#     if 'Result' in top4_df.columns:
+#         top4_df = top4_df.style.applymap(color_result, subset=['Result']).format(f).hide(axis="index")
+#     else:
+#         top4_df = top4_df.style.hide(axis="index")
+#     with st.expander("Top 4"):
+#         st.markdown(top4_df.to_html(), unsafe_allow_html=True)
+#     show_current_round=False
+# except:
+#     pass
+
+# try:
+#     top16_df = pd.read_excel("control_sheet.ods", engine="odf", sheet_name="top 16")
+#     if 'Result' in top16_df.columns:
+#         top16_df = top16_df.style.applymap(color_result, subset=['Result']).format(f).hide(axis="index")
+#     else:
+#         top16_df = top16_df.style.hide(axis="index")
+#     with st.expander("Top 16"):
+#         st.markdown(top16_df.to_html(), unsafe_allow_html=True)
+#     show_current_round=False
+# except:
+#     pass
 
 
 
 
 if show_current_round:
-    st.title(f"Pairings for round {current_round}")
-
-    
+    # st.title(f"Pairings for round {current_round}")
 
     # Sort players by name
-    df = round_df.sort_values(by="Player").rename({"Player": "Player (sorted alphabetically)"}, axis=1).drop("Result", axis=1).reset_index(drop=True)
+    # df = round_df.sort_values(by="Player").rename({"Player": "Player (sorted alphabetically)"}, axis=1).drop("Result", axis=1).reset_index(drop=True)
+
+    st.title("Game Results after Round 5")
+    df = pd.read_csv("current_standing.csv").sort_values("Player")
 
     # with st.expander("",expanded =True):
         # st.markdown(round_df.sort_values("Player").drop("Result", axis=1).style.hide(axis="index").to_html(), unsafe_allow_html=True)
     st.markdown(df.style.hide(axis="index").to_html(), unsafe_allow_html=True)
 
-    
-
-
     # Configuration
-    scroll_speed = 40  # Adjust scrolling speed (lower = faster)
+    scroll_speed = 75  # Adjust scrolling speed (lower = faster)
 
     # Custom CSS for transparent headers, equal column widths & smooth scrolling
     st.markdown(f"""
